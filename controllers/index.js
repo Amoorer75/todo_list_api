@@ -14,11 +14,11 @@ const createItem = async (req, res) => {
     try {
         const item = await new Item(req.body)
         await item.save()
-        return res.status(200).send({
+        return res.status(201).json({
             item,
         })
 
-    }catch(err){
+    }catch(error) {
         return res.status(500).json({error: error.message})
     }
 }
@@ -55,10 +55,24 @@ const deleteItem = async(req, res) => {
     }
 }
 
+const getItemById = async (req,res) => {
+    try{
+        const {id} = req.params
+        const item = await Item.findById(id)
+        if(item){
+            return res.status(200).json({item})
+        }
+        return res.status(404).send("Task with the specified ID does not exist")
+
+    }catch(error){
+        return res.status(500).send(error.message)
+    }
+}
+
 module.exports = {
     createItem,
     getAllItems,
- 
     updateItem,
-    deleteItem
+    deleteItem,
+    getItemById
 }
